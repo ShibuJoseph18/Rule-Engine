@@ -1,12 +1,15 @@
 export function tokenize(ruleString) {
-    const regex = /(\bAND\b|\bOR\b|>=|<=|!=|>|<|=|\(|\)|\w+\s*!=\s*\w+|\w+\s*=\s*\w+|\w+\s*>\s*\d+|\w+\s*<\s*\d+|\w+\s*>=\s*\d+|\w+\s*<=\s*\d+|\w+)/g;
-    const tokens = ruleString.match(regex);
-  
+    // Regular expression to match various components of the expression
+    const regex = /\s*(\(|\)|\bAND\b|\bOR\b|>=|<=|!=|>|<|=|'\w+'|\w+|\d+)\s*/g;
+    
+    // Match tokens using the regex
+    const tokens = ruleString.match(regex).filter(token => token.trim() !== '');
+
     if (!tokens) {
-      throw new Error("Invalid rule format: Unable to parse tokens.");
+        throw new Error("Invalid rule format: Unable to parse tokens.");
     }
-  
-    return tokens;
-  }
-  
-  
+
+    // Clean tokens to remove unwanted characters such as newlines
+    return tokens.map(token => token.replace(/\s+/g, '')).filter(token => token.length > 0);
+
+}

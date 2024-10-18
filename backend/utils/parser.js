@@ -1,10 +1,9 @@
-import { createAST } from './ASTBuilder.js';
-import { tokenize } from './tokenizer.js';
+import { buildAST } from './ASTBuilder.js';
+import { tokenize } from './tokenizer.js';  
 
 export function parseRuleToAST(ruleString) {
-
   const tokens = tokenize(ruleString);
-  const parsedAST = createAST(tokens);
+  const parsedAST = buildAST(tokens);
   return parsedAST;
 }
 
