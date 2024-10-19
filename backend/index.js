@@ -1,8 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import createRuleRoute from './routes/createRule.route.js';
+import errorHandler from './middleware/errorHandler.js';
+import sequelize from './config/database.js'; // Import the sequelize instance
 
 dotenv.config();
 
@@ -13,18 +15,25 @@ const PORT = 3000;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Database setup
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-});
+// Routes
+app.use('/api', createRuleRoute);
+
+// Error handling middleware
+app.use(errorHandler);
 
 // Test database connection
 sequelize.authenticate()
-    .then(() => console.log('Database connected'))
+    .then(() => {
+        console.log('Database connected');
+        // Synchronize models with the database
+        return sequelize.sync();  // Automatically create tables based on models
+    })
+    .then(() => {
+        console.log('Models synchronized');
+    })
     .catch(err => console.error('Database connection error:', err));
 
-// Basic route
+// Basic test route
 app.get('/', (req, res) => {
     res.send('Rule Engine API is running...');
 });
