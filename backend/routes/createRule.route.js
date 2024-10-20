@@ -1,5 +1,5 @@
 import express from 'express';
-import {createRule} from '../api/createRule.api.js';
+import { createRule } from '../api/createRule.api.js';
 
 const router = express.Router();
 
