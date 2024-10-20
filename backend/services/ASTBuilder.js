@@ -1,4 +1,4 @@
-import { ASTNode } from './ASTNode.js';
+import ASTNode from './ASTNode.js';
 
 export function buildAST(tokens) {
     const output = [];
@@ -14,7 +14,6 @@ export function buildAST(tokens) {
 
     for (let i = 0; i < tokens.length; i++) {
         const token = tokens[i];
-
         if (token === '(') {
             operators.push(token);
         } else if (token === ')') {
