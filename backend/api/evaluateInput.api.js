@@ -7,7 +7,7 @@ export const evaluateInput = async (req, res, next) => {
 
     // Fetch the rule from the database by ID
     const rule = await Rule.findByPk(ruleId);
-
+    
     // Check if the rule exists
     if (!rule) {
       return res.status(404).json({ message: 'Rule not found' });
@@ -18,17 +18,17 @@ export const evaluateInput = async (req, res, next) => {
 
     // Evaluate the user input against the AST
     const result = evaluateAST(astRoot, userInput); 
-    console.log(result);
 
     // Api response
     return res.status(200).json({
       message: 'Evaluation successful',
       result,
-      evaluation: result ? "The user input meets all conditions of the rule." : "The user input does not meet all conditions of the rule."
+      evaluation: result 
+        ? "The user input meets all conditions of the rule." 
+        : "The user input does not meet all conditions of the rule."
     });
   } catch (error) {
     console.error('Error evaluating rule:', error);
-    
     return res.status(500).json({ message: 'Error evaluating rule', error: error.message });
   }
 };
