@@ -1,6 +1,5 @@
 import transformToAST from '../services/parser.js';
 import Rule from '../models/Rule.js';
-// import storeAstInDb from '../services/storeAstInDb.js';
 
 export const modifyRule = async (req, res, next) => {
     const { id } = req.params; // Get the rule ID from the URL parameters
@@ -44,7 +43,6 @@ export const modifyRule = async (req, res, next) => {
     } catch (error) {
         console.error('Error updating rule:', error);
         next(error);
-        // return res.status(500).json({ message: 'Internal server error.' });
     }
 };
 

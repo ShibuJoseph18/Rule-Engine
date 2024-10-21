@@ -9,8 +9,6 @@ import modifyRuleRoute from './routes/modifyRule.route.js';
 import errorHandler from './middleware/errorHandler.js';
 import sequelize from './config/database.js'; // Import the sequelize instance
 
-
-
 dotenv.config();
 
 const app = express();
@@ -29,8 +27,10 @@ app.use('/api', modifyRuleRoute);
 // Error handling middleware
 app.use(errorHandler);
 
-// Test database connection
-sequelize.authenticate()
+if (process.env.NODE_ENV !== 'test') {
+
+    // Test database connection
+    sequelize.authenticate()
     .then(() => {
         console.log('Database connected');
         // Synchronize models with the database
@@ -41,12 +41,14 @@ sequelize.authenticate()
     })
     .catch(err => console.error('Database connection error:', err));
 
-// Basic test route
-app.get('/', (req, res) => {
-    res.send('Rule Engine API is running...');
-});
+    // Basic test route
+    app.get('/', (req, res) => {
+        res.send('Rule Engine API is running...');
+    });
+    // Start the server only if it's not in the test environment
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
 
-// Start the server
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+export default app;
