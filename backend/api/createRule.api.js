@@ -13,12 +13,12 @@ export const createRule = async (req, res, next) => {
     }
  
     // Check if the rule string already exists
-    const existingRule = await Rule.findOne({ where: { rule_string: ruleString } });
-    if (existingRule) {
-      return res.status(400).json({ message: 'Rule string already exists. Please use a unique rule.' });
-    }
+    // const existingRule = await Rule.findOne({ where: { rule_string: ruleString } });
+    // if (existingRule) {
+    //   return res.status(400).json({ message: 'Rule string already exists. Please use a unique rule.' });
+    // }
 
-    // Send the rule string to the AST transformation service
+    // Transform rule to AST
     const astRoot = transformToAST(ruleString);
 
     // Check if the transformation was successful
@@ -26,9 +26,10 @@ export const createRule = async (req, res, next) => {
       return res.status(500).json({ message: 'AST transformation failed' });
     }
 
-    // Save rule in the database
+    // Save rule in db
     await storeAstInDb(name, ruleString, astRoot);
-    return res.status(201).json({ message: 'Rule created and stored successfully', astRoot});
+    return res.status(201).json({ message: 'Rule created successfully', rule: { ast_root: astRoot } });
+
 
   } catch (error) {
     next(error);  // Pass errors to middleware
