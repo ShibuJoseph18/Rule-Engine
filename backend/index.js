@@ -2,12 +2,14 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import fetchRules from './routes/fetchRules.route.js';
 import createRuleRoute from './routes/createRule.route.js';
 import evaluateInputRoute from './routes/evaluateInput.route.js';
 import combineAstsRoute from './routes/combineAsts.route.js'; 
 import modifyRuleRoute from './routes/modifyRule.route.js';   
 import errorHandler from './middleware/errorHandler.js';
 import sequelize from './config/database.js'; // Import the sequelize instance
+
 
 dotenv.config();
 
@@ -23,6 +25,7 @@ app.use('/api', createRuleRoute);
 app.use('/api', evaluateInputRoute);
 app.use('/api', combineAstsRoute); 
 app.use('/api', modifyRuleRoute); 
+app.use('/api', fetchRules); 
 
 // Error handling middleware
 app.use(errorHandler);
