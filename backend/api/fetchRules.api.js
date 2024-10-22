@@ -23,12 +23,35 @@ const fetchRuleById = async (req, res, next) => {
             return res.status(404).json({ message: 'Rule not found' });
         }
 
-        // If the rule exists, return the rule as a JSON response
-        res.status(200).json(rule);
+        // Assuming rule properties are in the 'rule_string' field
+        const ruleString = rule.rule_string;
+
+        // Use a regex to capture properties with various operators and conditions
+        const propertyRegex = /\b(\w+)\s*(=|>|<|>=|<=|!=)\s*('[^']*'|\d+(\.\d+)?)/g;
+        const propertiesSet = new Set(); // Use Set to automatically handle duplicates
+
+        let match;
+
+        // Loop through all matches and add unique properties to the Set
+        while ((match = propertyRegex.exec(ruleString)) !== null) {
+            propertiesSet.add(match[1]); // Add the property name (e.g., "age", "salary", "department")
+        }
+
+        // Convert the Set to an array of unique properties
+        const properties = Array.from(propertiesSet);
+
+        // Respond with the rule data and the extracted properties
+        res.status(200).json({
+            ruleId: rule.id,
+            ruleName: rule.name,
+            ruleString: rule.rule_string,
+            properties,  // Return the unique properties as an array
+        });
     } catch (error) {
         console.error('Error fetching rule by ID:', error);
         res.status(500).json({ message: 'Failed to fetch rule by ID.' });
     }
 };
+
 
 export {fetchAllRules, fetchRuleById};
