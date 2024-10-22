@@ -21,9 +21,9 @@ export const modifyRule = async (req, res, next) => {
         }
 
         // Check if the new rule string is the same as the existing one
-        if (ruleString === rule.rule_string) {
-            return res.status(400).json({ message: 'New rule string is the same as the existing one. No changes made.' });
-        }
+        // if (ruleString === rule.rule_string) {
+        //     return res.status(400).json({ message: 'New rule string is the same as the existing one. No changes made.' });
+        // }
 
         // Transform the rule string to AST
         const astRoot = transformToAST(ruleString);
@@ -38,7 +38,8 @@ export const modifyRule = async (req, res, next) => {
 
         return res.status(200).json({
             message: 'Rule updated successfully.',
-            astRoot,
+            name: rule.name,
+            ruleString: rule.rule_string
         });
     } catch (error) {
         console.error('Error updating rule:', error);
