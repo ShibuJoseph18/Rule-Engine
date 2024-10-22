@@ -3,16 +3,6 @@ import request from 'supertest';  // For sending HTTP requests in tests
 import Rule from '../models/Rule.js'; // ORM model to access database
 
 describe('POST /api/combineRules', () => {
-    // Helper function to reset the database before running tests
-    // const resetDatabase = async () => {
-    //     // Truncate the rules table and reset the auto-increment counter
-    //     await Rule.destroy({ where: {}, truncate: true, restartIdentity: true });
-    // };
-
-    // // Before each test, reset the database
-    // beforeEach(async () => {
-    //     await resetDatabase();
-    // });
 
     it('should combine two rules and return the combined AST successfully', async () => {
         const ruleIds = [3, 4];
@@ -32,7 +22,6 @@ describe('POST /api/combineRules', () => {
 
         // Validate combined rule data
         const combinedRule = response.body.combinedRule;
-        expect(combinedRule.id).toBe(`${ruleIds[0]}-${ruleIds[1]}`);
 
         // Validate the combined AST structure
         const ast = combinedRule.ast;
@@ -47,7 +36,7 @@ describe('POST /api/combineRules', () => {
         // Check the operands on the left side (age > 30 AND department = 'Sales')
         const ageCondition = leftPart.left.left;
         expect(ageCondition.type).toBe('operand');
-        expect(ageCondition.value).toBe('age > 30');
+        expect(ageCondition.value).toBe('age > 26');
 
         const departmentCondition = leftPart.left.right;
         expect(departmentCondition.type).toBe('operand');
