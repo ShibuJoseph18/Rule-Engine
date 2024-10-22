@@ -6,11 +6,12 @@ import storeAstInDb from '../services/storeAstInDb.js';
 async function fetchASTs(ruleIds) {
   const rules = await Rule.findAll({
     where: { id: ruleIds },
-    attributes: ['id', 'name', 'ast_root']
+    attributes: ['id', 'name', 'rule_string', 'ast_root']
   });
   return rules.map(rule => ({
     id: rule.id,
     name: rule.name,
+    ruleString: rule.rule_string,
     ast: JSON.parse(rule.ast_root) // Parse the stored AST string
   }));
 }
@@ -98,6 +99,7 @@ export const combineRules = async (req, res) => {
   try {
     const { ruleIds, combinedRuleName } = req.body;
 
+
     // Validate input
     if (!Array.isArray(ruleIds) || !combinedRuleName?.trim()) {
       return res.status(400).json({
@@ -123,6 +125,7 @@ export const combineRules = async (req, res) => {
 
     // Generate unique identifier for the combined rule
     const combinedRuleId = ruleIds.sort().join('-');
+    const combinedRuleString = asts.map(rule => rule.ruleString).join(' && ');
 
     // Check if the combination already exists
     // const existingRule = await Rule.findOne({
@@ -143,14 +146,13 @@ export const combineRules = async (req, res) => {
         message: 'Failed to combine rules'
       });
     }
-
     // Create new rule name with combined rule identifier
     const newRuleName = `${combinedRuleName.trim()} (${combinedRuleId})`;
 
     // Store the combined AST in the database
     const stored = await storeAstInDb(
       newRuleName,
-      combinedRuleId,
+      combinedRuleString,
       JSON.stringify(combinedAST) // Stringify the AST before storing
     );
     if (!stored) {
@@ -163,7 +165,7 @@ export const combineRules = async (req, res) => {
       message: 'Rules combined successfully',
       combinedRule: {
         name: newRuleName,
-        id: combinedRuleId,
+        id: combinedRuleString,
         ast: combinedAST
       }
     });
