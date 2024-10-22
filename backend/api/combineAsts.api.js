@@ -127,6 +127,7 @@ export const combineRules = async (req, res) => {
     const combinedRuleId = ruleIds.sort().join('-');
     const combinedRuleString = asts.map(rule => rule.ruleString).join(' && ');
 
+
     // Check if the combination already exists
     // const existingRule = await Rule.findOne({
     //   where: { rule_string: combinedRuleId }
